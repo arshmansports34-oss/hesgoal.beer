@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch Live Stream — Hesgoal</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#070a08">
+
+<!-- favicon -->
+<link rel="icon" type="image/svg+xml" href="https://streameastv2.mom/favicon.svg">
+<link rel="shortcut icon" type="image/svg+xml" href="https://streameastv2.mom/favicon.svg">
+<link rel="apple-touch-icon" href="https://streameastv2.mom/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --bg:#070a08; --surface:#0e1511; --surface2:#0a100c;
+  --line:rgba(163,230,53,.10); --line2:rgba(163,230,53,.30);
+  --ink:#f0f7ee; --text2:#c2d4c0; --text3:#74836f;
+  --volt:#a3e635; --volt2:#65a30d; --voltink:#131a08;
+  --red:#f43f5e; --red2:#e11d48; --gold:#fbbf24;
+  --display:'Bebas Neue',Impact,system-ui,sans-serif; --body:'Manrope',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+
+.bg-orbs{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+  radial-gradient(circle at 50% -70px, transparent 130px, rgba(163,230,53,.05) 131px, rgba(163,230,53,.05) 133px, transparent 134px),
+  radial-gradient(900px 520px at 88% -10%,rgba(163,230,53,.10),transparent 62%),
+  radial-gradient(700px 460px at -10% 30%,rgba(101,163,13,.06),transparent 62%),
+  radial-gradient(600px 400px at 50% 118%,rgba(244,63,94,.05),transparent 62%)}
+
+.app{max-width:1080px;margin:0 auto;padding:0 1.25rem 4rem}
+
+/* ===== header ===== */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(7,10,8,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1280px;margin:0 auto;padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.logo{display:flex;align-items:center;gap:.65rem;text-decoration:none}
+.logo-mark{width:42px;height:42px;flex:0 0 auto;filter:drop-shadow(0 0 14px rgba(163,230,53,.3))}
+.logo-mark svg{width:100%;height:100%;display:block}
+.logo-name{font-family:var(--display);font-size:1.7rem;letter-spacing:.06em;line-height:1;color:var(--ink)}
+.logo-name .v{color:var(--volt)}
+.head-right{display:flex;align-items:center;gap:.6rem}
+.back-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1rem;border-radius:10px;background:var(--surface);
+  border:1px solid var(--line);color:var(--text2);font-family:var(--display);font-size:.95rem;letter-spacing:.1em;
+  text-decoration:none;transition:.2s}
+.back-btn:hover{border-color:var(--volt);color:var(--volt);box-shadow:0 0 14px rgba(163,230,53,.15)}
+.back-btn i{font-size:.72rem}
+.discord-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.1rem;border-radius:10px;background:#5865f2;color:#fff;
+  font-weight:800;font-size:.8rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(88,101,242,.35)}
+.discord-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(88,101,242,.5)}
+
+/* ===== match bar ===== */
+.match-bar{margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:.9rem 1.2rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.match-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--volt),var(--volt2))}
+.match-bar h1{font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,3vw,1.8rem);letter-spacing:.05em;line-height:1.1;
+  color:var(--ink);display:flex;align-items:center;gap:.7rem;min-width:0}
+.match-bar h1 i{color:var(--volt);flex:0 0 auto;font-size:.85em}
+.match-bar h1 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-tag{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .85rem;border-radius:999px;background:rgba(244,63,94,.1);
+  border:1px solid rgba(244,63,94,.4);color:var(--red);font-family:var(--display);font-size:.85rem;letter-spacing:.14em;flex:0 0 auto}
+.live-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.45;transform:scale(.8)}}
+
+/* ===== player ===== */
+.player-wrap{position:relative;margin-top:1rem;border-radius:16px;overflow:hidden;background:#020503;border:1px solid var(--line2);
+  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 34px rgba(163,230,53,.05);aspect-ratio:16/9}
+.player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.player-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;
+  text-align:center;padding:2rem;color:var(--text2)}
+.player-empty i{font-size:2.6rem;color:var(--volt);opacity:.85}
+.player-empty h2{font-family:var(--display);font-size:1.6rem;letter-spacing:.1em;color:var(--ink)}
+.player-empty p{font-size:.9rem;line-height:1.65;max-width:46ch}
+.player-empty a{margin-top:.4rem;display:inline-flex;align-items:center;gap:.55rem;padding:.75rem 1.5rem;border-radius:12px;
+  background:var(--volt);color:var(--voltink);font-family:var(--display);font-size:1rem;letter-spacing:.12em;
+  text-decoration:none;transition:.2s;box-shadow:0 8px 24px rgba(163,230,53,.25)}
+.player-empty a:hover{background:#b9ec4a;box-shadow:0 12px 30px rgba(163,230,53,.4)}
+
+.player-loading{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,5,3,.78);
+  backdrop-filter:blur(4px);z-index:5}
+.player-loading.on{display:flex}
+.player-loading .ring{width:54px;height:54px;border-radius:50%;border:3px solid rgba(163,230,53,.15);border-top-color:var(--volt);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== controls ===== */
+.controls{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.ctl{display:inline-flex;align-items:center;gap:.55rem;padding:.7rem 1.2rem;border-radius:10px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);color:var(--text2);font-family:var(--display);font-size:.95rem;
+  letter-spacing:.1em;transition:.2s}
+.ctl i{font-size:.78rem}
+.ctl:hover{border-color:var(--volt);color:var(--volt);box-shadow:0 0 14px rgba(163,230,53,.15)}
+.ctl.primary{background:var(--volt);color:var(--voltink);border-color:transparent;box-shadow:0 6px 18px rgba(163,230,53,.3)}
+.ctl.primary:hover{background:#b9ec4a;color:var(--voltink);box-shadow:0 8px 24px rgba(163,230,53,.45)}
+.ctl.danger{border-color:rgba(244,63,94,.35);color:var(--red)}
+.ctl.danger:hover{background:rgba(244,63,94,.08);border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(244,63,94,.2)}
+.ctl[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ===== notice ===== */
+.notice{margin-top:1rem;padding:.9rem 1.2rem;border-radius:12px;background:var(--surface2);border:1px solid var(--line);
+  border-left:3px solid var(--gold);color:var(--text2);font-size:.85rem;line-height:1.7;display:flex;gap:.75rem;align-items:flex-start}
+.notice i{color:var(--gold);margin-top:.18rem;flex:0 0 auto}
+.notice b{color:var(--ink)}
+
+/* ===== guide ===== */
+.guide{margin-top:2.5rem;padding:1.8rem;border:1px solid var(--line);border-radius:20px;background:var(--surface);position:relative;overflow:hidden}
+.guide::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--volt),transparent)}
+.g-sec{padding-top:1.6rem;margin-top:1.6rem;border-top:1px solid var(--line)}
+.g-sec:first-child{padding-top:0;margin-top:0;border-top:0}
+.guide h2{font-family:var(--display);font-size:1.6rem;letter-spacing:.04em;line-height:1.15;margin-bottom:.7rem;color:var(--ink)}
+.guide h3{font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:1.2rem 0 .4rem;color:var(--volt)}
+.guide p,.guide li{color:var(--text2);font-size:.93rem;line-height:1.8}
+.guide ul{padding-left:1.1rem;display:grid;gap:.4rem}
+.guide p+p{margin-top:.6rem}
+
+.foot{margin-top:2rem;text-align:center;color:var(--text3);font-size:.76rem;line-height:1.7}
+
+/* ---------- ADS (sticky) ---------- */
+.ad-side{position:fixed;top:50%;transform:translateY(-50%);width:160px;height:600px;z-index:40;display:none;overflow:hidden}
+#adLeft{left:10px}
+#adRight{right:10px}
+.ad-bottom{position:fixed;bottom:10px;left:50%;width:728px;height:90px;z-index:40;display:none;overflow:hidden;border-radius:12px;
+  transform:translateX(-50%);transform-origin:bottom center}
+@media(min-width:1620px){.ad-side{display:block}}
+@media(min-width:790px){.ad-bottom{display:block}body{padding-bottom:112px}}
+@media(max-width:789px){
+  .ad-bottom{display:block;transform:translateX(-50%) scale(.44);border-radius:8px}
+  body{padding-bottom:70px}
+}
+
+/* ---------- responsive ---------- */
+@media(max-width:640px){
+  .app{padding:0 .8rem 3rem}
+  .topbar-in{padding:.55rem .8rem}
+  .discord-btn span{display:none}.discord-btn{padding:.55rem .8rem}
+  .back-btn span{display:none}.back-btn{padding:.55rem .85rem}
+  .guide{padding:1.3rem 1.1rem}
+  .controls .ctl{flex:1 1 auto;justify-content:center}
+  .guide h2{font-size:1.35rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<!-- Popunder ad -->
+<script data-cfasync="false" src="https://capitalhospitals.org/1/cd2ede3915aed8ac32648df7385b788a"></script>
+
+<div class="bg-orbs"></div>
+
+<!-- ===== header ===== -->
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="logo" href="https://hesgoal.beer/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><linearGradient id="lgo" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#a3e635"/><stop offset="1" stop-color="#65a30d"/></linearGradient></defs>
+          <path d="M22 2 40 12.5v19L22 42 4 31.5v-19L22 2Z" fill="url(#lgo)"/>
+          <path d="M15 13v18M29 13v18M15 22h14" stroke="#131a08" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="33" cy="33" r="4.5" fill="#131a08"/>
+        </svg>
+      </div>
+      <span class="logo-name"><span class="v">Hes</span>goal</span>
+    </a>
+    <div class="head-right">
+      <a href="https://hesgoal.beer/" class="back-btn"><i class="fa-solid fa-arrow-left"></i><span>All Matches</span></a>
+      <a href="https://discord.gg/aEqBuf8Ys" class="discord-btn" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-discord"></i><span>Join Discord</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="match-bar">
+    <h1><i class="fa-solid fa-circle-play"></i><span id="mTitle">Live Match</span></h1>
+    <span class="live-tag"><span class="dot"></span>LIVE STREAM</span>
+  </div>
+
+  <div class="player-wrap" id="playerWrap">
+    <div class="player-loading" id="pLoad"><div class="ring"></div></div>
+    <iframe id="player" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    <div class="player-empty" id="pEmpty">
+      <i class="fa-solid fa-satellite-dish"></i>
+      <h2>NO STREAM SELECTED</h2>
+      <p>Pick any match from the Hesgoal board and it opens right here, ready to play.</p>
+      <a href="https://hesgoal.beer/"><i class="fa-solid fa-list"></i>BROWSE ALL MATCHES</a>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctl primary" id="btnReload"><i class="fa-solid fa-rotate-right"></i>RELOAD STREAM</button>
+    <button class="ctl" id="btnNewTab"><i class="fa-solid fa-arrow-up-right-from-square"></i>OPEN DIRECT LINK</button>
+    <button class="ctl" id="btnFull"><i class="fa-solid fa-expand"></i>FULLSCREEN</button>
+    <button class="ctl danger" id="btnReport"><i class="fa-solid fa-triangle-exclamation"></i>REPORT BROKEN</button>
+  </div>
+
+  <div class="notice">
+    <i class="fa-solid fa-circle-info"></i>
+    <div>If the stream is slow or showing a black screen, press <b>Reload Stream</b> once. If the problem continues, open it in a new tab with <b>Open Direct Link</b>, or report it on Discord. Every Hesgoal match runs on this same player.</div>
+  </div>
+
+  <div class="guide">
+    <section class="g-sec">
+      <h2>The Hesgoal Player — One Job, Done Well</h2>
+      <p>This page exists to do exactly one thing: take the match you picked on the Hesgoal board and put it on your screen with as few steps as possible. No landing maze, no fake play buttons, no countdown timers pretending to load something. The stream mounts directly in the player window, the controls sit right underneath it, and the board is always one tap away through the All Matches button in the header.</p>
+      <h3>Every Control You Need, Nothing You Don't</h3>
+      <p>Reload Stream re-mounts the stream in one tap — the fastest fix for a frozen picture. Open Direct Link pops the stream into its own tab, which is the cleanest way to send it to a TV or a second screen. Fullscreen takes over the whole display, and Report Broken hands the match to the Discord server so the board stays honest.</p>
+    </section>
+
+    <section class="g-sec">
+      <h2>What Plays Here: Football First, Everything Else Close Behind</h2>
+      <p>Whatever the Hesgoal board carries, this player carries — because they are the same feed. Premier League mornings, Champions League nights, La Liga and Serie A, plus NFL Sundays, NBA weeknights, UFC fight cards, boxing title fights, F1 weekends and everything else on the calendar all open on this exact page.</p>
+      <ul>
+        <li>Pick a match on the board, the player opens with the stream already mounting.</li>
+        <li>Switch between two matches by keeping two player tabs side by side.</li>
+        <li>Cast or mirror the whole page to a smart TV — the player scales to any screen.</li>
+        <li>Arrive late? The stream joins mid-match, no waiting for a replay window.</li>
+      </ul>
+    </section>
+
+    <section class="g-sec">
+      <h2>Quick Fixes When a Stream Misbehaves</h2>
+      <p>Streams depend on live sources, and live sources occasionally hiccup. The fix is almost always one of these, in order:</p>
+      <ul>
+        <li>Press Reload Stream once and give the player a few seconds to re-mount.</li>
+        <li>Try Open Direct Link — some sources simply play better in their own tab.</li>
+        <li>Check your connection; the board itself is featherweight, but video needs bandwidth.</li>
+        <li>Still stuck? Hit Report Broken and the match gets flagged on Discord immediately.</li>
+      </ul>
+    </section>
+  </div>
+  <p class="foot">&copy; Hesgoal. All team and league names and logos belong to their respective owners.</p>
+</div>
+
+<!-- ===== ADS ===== -->
+<!-- Left 160x600 sticky -->
+<div class="ad-side" id="adLeft">
+  <script type="text/javascript">
+    atOptions = {'key':'8460d979eaa04e23e84499b613e6aca9','format':'iframe','height':600,'width':160,'params':{}};
+  </script>
+  <script type="text/javascript" src="https://czernik.org/22/8460d979eaa04e23e84499b613e6aca9"></script>
+</div>
+
+<!-- Right 160x600 sticky -->
+<div class="ad-side" id="adRight">
+  <script type="text/javascript">
+    atOptions = {'key':'8460d979eaa04e23e84499b613e6aca9','format':'iframe','height':600,'width':160,'params':{}};
+  </script>
+  <script type="text/javascript" src="https://czernik.org/22/8460d979eaa04e23e84499b613e6aca9"></script>
+</div>
+
+<!-- Bottom 728x90 sticky -->
+<div class="ad-bottom" id="adBottom">
+  <script type="text/javascript">
+    atOptions = {'key':'6786ca601524f56715d5859a0fc7658f','format':'iframe','height':90,'width':728,'params':{}};
+  </script>
+  <script type="text/javascript" src="https://czernik.org/22/6786ca601524f56715d5859a0fc7658f"></script>
+</div>
+
+<!-- Histats analytics -->
+<script type="text/javascript">var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,5048377,4,9,110,60,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();</script>
+<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5048377&101" alt="website stats" border="0"></a></noscript>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const player=$('player'),pLoad=$('pLoad'),pEmpty=$('pEmpty'),wrap=$('playerWrap');
+  const params=new URLSearchParams(location.search);
+  const url=params.get('url')||'';
+  const title=params.get('title')||'Live Match';
+  document.title=title+' — Hesgoal Live Stream';
+  $('mTitle').textContent=title;
+
+  function isHttp(u){return /^https?:\/\//i.test(u)}
+
+  function mount(){
+    if(!isHttp(url)){
+      player.style.display='none';
+      pEmpty.style.display='flex';
+      pLoad.classList.remove('on');
+      return;
+    }
+    pEmpty.style.display='none';
+    player.style.display='block';
+    pLoad.classList.add('on');
+    player.src=url;
+    setTimeout(()=>pLoad.classList.remove('on'),3500);
+    player.onload=()=>pLoad.classList.remove('on');
+  }
+
+  if(isHttp(url))mount();else{player.style.display='none';pEmpty.style.display='flex'}
+
+  $('btnReload').addEventListener('click',()=>{
+    if(!isHttp(url))return;
+    player.src='about:blank';
+    setTimeout(mount,150);
+  });
+
+  $('btnNewTab').addEventListener('click',()=>{
+    if(!isHttp(url))return;
+    window.open(url,'_blank','noopener');
+  });
+
+  $('btnFull').addEventListener('click',()=>{
+    const r=wrap.requestFullscreen?wrap:player;
+    if(r.requestFullscreen)r.requestFullscreen().catch(()=>{});
+  });
+
+  $('btnReport').addEventListener('click',()=>{
+    window.open('https://discord.gg/aEqBuf8Ys','_blank','noopener');
+  });
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='f'||e.key==='F')$('btnFull').click();
+    if(e.key==='r'||e.key==='R')$('btnReload').click();
+  });
+})();
+</script>
+</body>
+</html>
